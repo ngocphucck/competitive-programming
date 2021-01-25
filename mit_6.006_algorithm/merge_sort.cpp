@@ -62,7 +62,7 @@ vector<_Tp> merge_sort(vector<_Tp> list, size_t begin, size_t end)
 
 int main()
 {
-	vector<int> list(100);
+	vector<int> list(100000);
 	generate(list.begin(), list.end(), []() -> int {
 			return rand() % 100; 
 			});
