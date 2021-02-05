@@ -74,12 +74,6 @@ class BST
 };
 
 
-template <typename _Tp>
-void bst_sort(vector<_Tp> list)
-{
-
-}
-
 int main()
 {
 	vector<int> list = {3, 1, 8, 4, 6, 2, 3, 5, 1, 0, 2, 3};
