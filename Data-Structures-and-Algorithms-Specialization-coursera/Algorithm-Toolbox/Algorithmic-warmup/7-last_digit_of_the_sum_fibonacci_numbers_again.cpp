@@ -55,8 +55,41 @@ string rev_str(string str) {reverse(str.begin(), str.end()); return str;}
 #define dbf(x) cerr<<__FUNCTION__<<":"<<__LINE__<<": "#x" = "<<x<<endl
 
 
+lli cal_sum_fibonacci(lli n)
+{
+	lli ped = 2;
+	vector<lli> v;
+	vector<lli> sum;
+	v.push_back(0);
+	v.push_back(1);
+	sum.push_back(0);
+	sum.push_back(1);
+	while(ped <= n)
+	{
+		v.push_back((v[ped-1] + v[ped-2]) % 10);
+		if (ped < n && v[ped] == 1 && v[ped - 1] == 0)
+			break;
+		sum.push_back((sum[ped-1] + v[ped]) % 10);
+		ped++;
+	}
+
+	if (n <= 1)
+		return sum[n];
+	else if (ped <= n)
+		return n / ped * sum[ped - 1] + sum[n % (ped - 1)];
+	else 
+		return sum[ped - 1];
+}
+
+
 void solve()
 {
+	lli m, n;
+	cin >> m >> n;
+	if (m == 0)
+		cout << cal_sum_fibonacci(n);
+	else
+		cout << (cal_sum_fibonacci(n) - cal_sum_fibonacci(m - 1) + 10) % 10;
 }
 
 
