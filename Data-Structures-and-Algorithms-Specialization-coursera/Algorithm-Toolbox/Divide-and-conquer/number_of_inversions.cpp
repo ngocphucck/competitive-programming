@@ -1,7 +1,6 @@
 //============================Task===========================================
-//Find the first occurence of an integer in the given sorted sequence of integers (possibly with dupli-
-//cates).
-//============================libraries and namespaces=======================
+//The goal in this problem is to count the number of inversions of a given sequence.
+//============================Libraries and namespaces=======================
 #include <algorithm>
 #include <bits/stdc++.h>
 #include <cctype>
@@ -85,39 +84,64 @@ string rev_str(string str) {reverse(str.begin(), str.end()); return str;}
 
 
 //============================Functions===================================
-int binary_search(vi& v, int l, int r, int value)
+
+void merge(vector<int>& arr, int l, int m, int r, int& num_inversions)
 {
-	if (l > r)
-		return -1;
-	if (l == r && v[l] == value)
-		return l;
-	int mid = l + (r - l)/2;
-	if (value == v[mid])
-		return binary_search(v, l, mid, value);
-	else if (value < v[mid])
-		return binary_search(v, l, mid - 1, value);
-	else 
-		return binary_search(v, mid + 1, r, value);
+	vector<int> left_arr(m - l + 1);
+	vector<int> right_arr(r - m);
+	for(int i = 0; i < m - l + 1; ++i)
+		left_arr[i] = arr[i + l];
+	for(int i = 0; i < r - m; ++i)
+		right_arr[i] = arr[i + m + 1];
+
+	int a = 0;
+	int b = 0;
+
+	for(int i = l; i <= r; ++i)
+		if(a == m - l + 1)
+			arr[i] = right_arr[b++];
+
+		else if (b == r - m)
+			arr[i] = left_arr[a++];
+		
+		else
+		{
+			if (left_arr[a] <= right_arr[b])
+				arr[i] = left_arr[a++];
+			else
+			{
+				arr[i] = right_arr[b++];
+				num_inversions += left_arr.size() - a;
+			}
+		}
 }
 
+void merge_sort(vector<int>& arr, int l, int r, int& num_inversions)
+{
+	if (l >= r)
+		return;
+	else
+	{
+		int m = l + (r - l) / 2;
+		merge_sort(arr, l, m, num_inversions);
+		merge_sort(arr, m + 1, r, num_inversions);
+		merge(arr, l, m, r, num_inversions);
+	}
+}
 
 void solve()
 {
 	int n;
 	cin >> n;
-	vi v(n);
-	for(int& i : v)
-		cin >> i;
-	int k;
-	cin >> k;
-	fore(i, k - 1)
-	{
-		int value; 
-		cin >> value;
-		cout << binary_search(v, 0, v.size() - 1, value) << sp;
-	}
+	vector<int> arr(n);
 
-	cout << el;
+	for(int& i : arr)
+		cin >> i;
+
+	int res = 0;
+	merge_sort(arr, 0, arr.size() - 1, res);
+
+	cout << res << el;
 }
 
 //===========================Main=========================================

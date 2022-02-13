@@ -1,3 +1,5 @@
+//============================Task===========================================
+//The goal in this code problem is to check whether an input sequence contains a majority element.
 //============================Libraries and namespaces=======================
 #include <algorithm>
 #include <bits/stdc++.h>

@@ -1,3 +1,5 @@
+//============================Task==========================================
+//The goal in this code problem is to implement the binary search algorithm.
 //============================Libraries and namespaces=======================
 #include <algorithm>
 #include <bits/stdc++.h>

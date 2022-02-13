@@ -1,7 +1,7 @@
 //============================Task===========================================
-//Find the first occurence of an integer in the given sorted sequence of integers (possibly with dupli-
-//cates).
-//============================libraries and namespaces=======================
+//You are given a set of points on a line and a set of segments on a line. The goal is to compute, for
+//each point, the number of segments that contain this point.
+//============================Libraries and namespaces=======================
 #include <algorithm>
 #include <bits/stdc++.h>
 #include <cctype>
@@ -85,38 +85,47 @@ string rev_str(string str) {reverse(str.begin(), str.end()); return str;}
 
 
 //============================Functions===================================
-int binary_search(vi& v, int l, int r, int value)
-{
-	if (l > r)
-		return -1;
-	if (l == r && v[l] == value)
-		return l;
-	int mid = l + (r - l)/2;
-	if (value == v[mid])
-		return binary_search(v, l, mid, value);
-	else if (value < v[mid])
-		return binary_search(v, l, mid - 1, value);
-	else 
-		return binary_search(v, mid + 1, r, value);
-}
-
-
 void solve()
 {
-	int n;
-	cin >> n;
-	vi v(n);
-	for(int& i : v)
-		cin >> i;
-	int k;
-	cin >> k;
-	fore(i, k - 1)
-	{
-		int value; 
-		cin >> value;
-		cout << binary_search(v, 0, v.size() - 1, value) << sp;
-	}
+	int s, p;
+	cin >> s >> p;
+	vector<int> start_points(s);
+	vector<int> end_points(s);
+	vector<int> points(p);
 
+	for(int i = 0; i < s; ++i)
+		cin >> start_points[i] >> end_points[i];
+	for(int& i : points)
+		cin >> i;
+
+	vector<pair<int, int>> combined;
+
+	for(int i : start_points)
+		combined.push_back({i, 0});
+	for(int i : points)
+		combined.push_back({i, 1});
+	for(int i : end_points)
+		combined.push_back({i, 2});
+
+	unordered_map<int, int> m;
+	sort(combined.begin(), combined.end(), [&](pair<int, int> a, pair<int, int> b){
+			if (a.first == b.first)
+				return a.second < b.second;
+			return a.first < b.first;
+			});
+
+	int count = 0;
+
+	for(auto& i : combined)
+		if (i.second == 0)
+			count++;
+		else if (i.second == 2)
+			count--;
+		else
+			m[i.first] = count;
+
+	for(int& i : points)
+		cout << m[i] << " ";
 	cout << el;
 }
 

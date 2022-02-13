@@ -1,7 +1,5 @@
 //============================Task===========================================
-//Find the first occurence of an integer in the given sorted sequence of integers (possibly with dupli-
-//cates).
-//============================libraries and namespaces=======================
+//============================Libraries and namespaces=======================
 #include <algorithm>
 #include <bits/stdc++.h>
 #include <cctype>
@@ -9,6 +7,7 @@
 #include <functional>
 #include <iomanip>
 #include <ios>
+#include <limits>
 #include <numeric>
 #include <sstream>
 #include <string>
@@ -85,39 +84,61 @@ string rev_str(string str) {reverse(str.begin(), str.end()); return str;}
 
 
 //============================Functions===================================
-int binary_search(vi& v, int l, int r, int value)
+double distance(pair<lli, lli> p1, pair<lli, lli> p2)
 {
-	if (l > r)
-		return -1;
-	if (l == r && v[l] == value)
-		return l;
-	int mid = l + (r - l)/2;
-	if (value == v[mid])
-		return binary_search(v, l, mid, value);
-	else if (value < v[mid])
-		return binary_search(v, l, mid - 1, value);
-	else 
-		return binary_search(v, mid + 1, r, value);
+	return sqrt((p1.first - p2.first) * (p1.first - p2.first) + (p1.second - p2.second) * (p1.second - p2.second));
 }
 
+double find_closest_distance(vector<pair<lli, lli>> points, int l, int r)
+{
+	if (l >= r)
+		return numeric_limits<double>::max();
+	
+	int mid = l + (r - l) / 2;
+	double left_distance = find_closest_distance(points, l, mid);
+	double right_distance = find_closest_distance(points, mid + 1, r);
+	double d = min(left_distance, right_distance);
+	int a = 0; 
+	int b = 0;
+
+	double mid_x = 0;
+	for(int i = l; i <= r; ++i)
+		mid_x += points[i].first;
+	mid_x = mid_x / (r - l + 1);
+
+	vector<pair<lli, lli>> mid_elements;
+	for(int i = l; i <= r; ++i)
+		if (abs(points[i].first - mid_x) < d)
+			mid_elements.push_back(points[i]);
+
+	sort(mid_elements.begin(), mid_elements.end(), [&](pair<lli, lli>& p1, pair<lli, lli>& p2){
+			return p1.second <= p2.second;
+			});
+
+	for(int i = 0; i < mid_elements.size(); ++i)
+		for(int j = i + 1; j < min<int>(i + 8, mid_elements.size()); ++j)
+		{
+			if (mid_elements[j].second - mid_elements[i].second > d)
+				break;
+			d = min(d, distance(mid_elements[i], mid_elements[j]));
+		}
+
+	return d;
+}
 
 void solve()
 {
 	int n;
 	cin >> n;
-	vi v(n);
-	for(int& i : v)
-		cin >> i;
-	int k;
-	cin >> k;
-	fore(i, k - 1)
-	{
-		int value; 
-		cin >> value;
-		cout << binary_search(v, 0, v.size() - 1, value) << sp;
-	}
+	vector<pair<lli, lli>> points(n);
+	for(auto& i : points)
+		cin >> i.first >> i.second;
 
-	cout << el;
+	sort(points.begin(), points.end(), [&](pair<lli, lli>& p1, pair<lli, lli>& p2){
+			return p1.first <= p2.first;
+			});
+
+	cout << fixed << setprecision(4) << find_closest_distance(points, 0, points.size() - 1) << el;
 }
 
 //===========================Main=========================================

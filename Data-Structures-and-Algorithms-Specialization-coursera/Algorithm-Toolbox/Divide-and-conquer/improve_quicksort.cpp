@@ -1,7 +1,7 @@
 //============================Task===========================================
-//Find the first occurence of an integer in the given sorted sequence of integers (possibly with dupli-
-//cates).
-//============================libraries and namespaces=======================
+//To force the given implementation of the quick sort algorithm to efficiently process sequences with
+//few unique elements, your goal is replace a 2-way partition with a 3-way partition.
+//============================Libraries and namespaces=======================
 #include <algorithm>
 #include <bits/stdc++.h>
 #include <cctype>
@@ -85,37 +85,51 @@ string rev_str(string str) {reverse(str.begin(), str.end()); return str;}
 
 
 //============================Functions===================================
-int binary_search(vi& v, int l, int r, int value)
+ii partition(vi& arr, int l, int r)
 {
-	if (l > r)
-		return -1;
-	if (l == r && v[l] == value)
-		return l;
-	int mid = l + (r - l)/2;
-	if (value == v[mid])
-		return binary_search(v, l, mid, value);
-	else if (value < v[mid])
-		return binary_search(v, l, mid - 1, value);
-	else 
-		return binary_search(v, mid + 1, r, value);
+	int lower_index = l;
+	int upper_index = l;
+	int pivot = arr[l];
+	forbe(i, l + 1, r)
+		if (arr[i] == pivot)
+		{
+			upper_index++;
+			swap(arr[upper_index], arr[i]);
+		}
+		else if (arr[i] < pivot)
+		{
+			upper_index++;
+			swap(arr[i], arr[upper_index]);
+			lower_index++;
+			swap(arr[lower_index], arr[upper_index]);
+			swap(arr[lower_index], arr[lower_index-1]);
+		}
+
+	return {lower_index, upper_index};
 }
 
+void quicksort(vi& arr, int l, int r)
+{
+	if (l >= r)
+		return;
+	int pivot = l + rand() % (r - l + 1);
+	swap(arr[l], arr[pivot]);
+	ii indices = partition(arr, l, r);
+	quicksort(arr, l, indices.first - 1);
+	quicksort(arr, indices.second + 1, r);
+}
 
 void solve()
 {
 	int n;
 	cin >> n;
-	vi v(n);
-	for(int& i : v)
+	vi arr(n);
+	for(int& i : arr)
 		cin >> i;
-	int k;
-	cin >> k;
-	fore(i, k - 1)
-	{
-		int value; 
-		cin >> value;
-		cout << binary_search(v, 0, v.size() - 1, value) << sp;
-	}
+
+	quicksort(arr, 0, arr.size() - 1);
+	for(int& i : arr)
+		cout << i << ' ';
 
 	cout << el;
 }
